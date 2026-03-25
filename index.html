@@ -104,8 +104,15 @@
   }
   function newBinary() {
     const k = Math.floor(Math.random()*128);
-    return { p: k/128, k, trials: [], guess: "", done: false, score: null };
-  }
+      return { 
+        p: k/128, 
+        k, 
+        trials: [], 
+        bits: [0,0,0,0,0,0,0], // ←追加
+        done: false, 
+        score: null 
+      };
+}
   function newMagyar() {
     return { p: [0.2,0.5,0.8][Math.floor(Math.random()*3)], round: 0, matches: 0, firsts: [], guess: null, done: false, score: null };
   }
@@ -337,7 +344,20 @@
             </div>
             <label class="stack">
               <div class="small">2進数小数表記の推測（例: .0101010）</div>
-              <input class="input" type="text" value="${g.guess}" data-bin-guess placeholder=".0000000" ${g.done ? "disabled" : ""} />
+              <div class="stack">
+                <div class="small">2進数小数表記の推測</div>
+
+                <div class="row">
+                <span class="mono">0.</span>
+                ${[0,1,2,3,4,5,6].map(i => `
+                  <input type="range" min="0" max="1" step="1"
+                    value="${g.bits ? g.bits[i] : 0}"
+                    data-bit-index="${i}"
+                    class="bit-slider">
+                <span class="mono">${g.bits ? g.bits[i] : 0}</span>
+          `).join("")}
+      </div>
+</div>
             </label>
             ${g.done ? `<div class="scorebox">得点: <strong style="font-size:28px">${g.score}</strong></div>` : ""}
             <div class="small muted">秘密の p は表示されません。</div>
@@ -628,15 +648,80 @@
     app.querySelectorAll('[data-bin-guess]').forEach(el => el.addEventListener('input', e => {
       state.games.binary.guess = e.target.value.trim();
     }));
-    app.querySelectorAll('[data-bin-submit]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.binary;
-      if (g.done || g.trials.length < 7) return;
-      const target = "." + [...Array(7)].map((_,i)=> ((g.k >> (6-i)) & 1)).join("");
-      const guess = (g.guess || "").trim();
-      const score = guess === target ? 100 : 0;
-      g.done = true; g.score = score;
-      finishGame("binary", score);
-    }));
+   app.querySelectorAll('[data-bin-submit]').forEach(el => el.addEventListener('click', () => {
+  const g = state.games.binary;
+  if (g.done || g.trials.length < 7) return;
+
+  const bits = g.bits;
+
+  // 観測データの1の個数
+  const observedOnes = g.trials.filter(x => x === 1).length;
+
+  // 入力の1の個数
+  const guessOnes = bits.filter(x => x === 1).length;
+
+  // 個数が一致しない → 0点
+  if (observedOnes !== guessOnes) {
+    g.done = true;
+    g.score = 0;
+    finishGame("binary", 0);
+    return;
+  }
+
+  // p推定
+  let pGuess = 0;
+  for (let i = 0; i < 7; i++) {
+    if (bits[i] === 1) {
+      pGuess += Math.pow(2, -(i + 1));
+    }
+  }
+
+  const score = Math.round(100 - 100 * Math.abs(g.p - pGuess));
+
+  g.done = true;
+  g.score = score;
+  finishGame("binary", score);
+}));
+
+  // 形式チェック（.xxxxxxxx）
+  if (!/^\\.[01]{7}$/.test(guess)) {
+    g.done = true;
+    g.score = 0;
+    finishGame("binary", 0);
+    return;
+  }
+
+  // 観測データの1の個数
+  const observedOnes = g.trials.filter(x => x === 1).length;
+
+  // 入力の1の個数
+  const guessOnes = guess.slice(1).split("").filter(x => x === "1").length;
+
+  // 個数が一致しない → 0点
+  if (observedOnes !== guessOnes) {
+    g.done = true;
+    g.score = 0;
+    finishGame("binary", 0);
+    return;
+  }
+
+  // 推測pを計算（2進数小数 → 十進）
+  let pGuess = 0;
+  for (let i = 0; i < 7; i++) {
+    if (guess[i + 1] === "1") {
+      pGuess += Math.pow(2, -(i + 1));
+    }
+  }
+
+  const pTrue = g.p;
+
+  // スコア計算
+  const score = Math.round(100 - 100 * Math.abs(pTrue - pGuess));
+
+  g.done = true;
+  g.score = score;
+  finishGame("binary", score);
+}));
 
     app.querySelectorAll('[data-mag-run]').forEach(el => el.addEventListener('click', () => {
       const g = state.games.magyar;
@@ -674,6 +759,13 @@
       render();
     }));
   }
+  app.querySelectorAll('[data-bit-index]').forEach(el => {
+  el.addEventListener('input', e => {
+    const idx = Number(el.getAttribute("data-bit-index"));
+    state.games.binary.bits[idx] = Number(e.target.value);
+    render();
+  });
+});
 
   render();
 })();
