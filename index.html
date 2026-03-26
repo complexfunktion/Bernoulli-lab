@@ -6,677 +6,1384 @@
   <title>Bernoulli Lab</title>
   <style>
     :root{
-      --bg:#0b1020; --panel:#11182b; --panel2:#0f1526; --line:#26314f;
-      --text:#eef2ff; --muted:#93a4c7; --accent:#6d7cff; --good:#23c483; --bad:#ff6b6b; --warn:#f4b942;
-      --shadow: 0 18px 40px rgba(0,0,0,.35);
-      --radius: 24px;
+      --bg0:#07101d;
+      --bg1:#0b1730;
+      --panel:rgba(16, 24, 44, .90);
+      --panel2:rgba(9, 15, 30, .84);
+      --line:#243452;
+      --text:#edf2ff;
+      --muted:#9aa8c7;
+      --accent:#7888ff;
+      --accent2:#23c483;
+      --warn:#f3b84b;
+      --danger:#ff6b6b;
+      --shadow:0 24px 56px rgba(0,0,0,.36);
+      --radius:26px;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:
-      radial-gradient(1200px 800px at 20% 0%, #172042 0%, var(--bg) 50%) fixed;
-      color:var(--text);}
+    html,body{min-height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 0%, rgba(120,136,255,.18), transparent 60%),
+        radial-gradient(700px 500px at 85% 10%, rgba(35,196,131,.12), transparent 55%),
+        linear-gradient(180deg,var(--bg1),var(--bg0));
+      background-attachment:fixed;
+    }
     button,input{font:inherit}
-    .app{max-width:1200px;margin:0 auto;padding:20px;min-height:100vh}
-    .topbar,.panel,.card{border:1px solid var(--line);background:rgba(17,24,43,.92);box-shadow:var(--shadow);backdrop-filter: blur(8px)}
-    .topbar{border-radius:28px;padding:18px 20px;margin-bottom:16px;display:flex;justify-content:space-between;gap:16px;align-items:center}
-    .title{font-size:28px;font-weight:800;letter-spacing:.2px}
-    .sub{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.6}
-    .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#111a31;border:1px solid var(--line);color:var(--muted);font-size:13px}
+    .app{
+      max-width:1280px;
+      margin:0 auto;
+      padding:20px;
+      min-height:100vh;
+    }
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      padding:18px 20px;
+      margin-bottom:16px;
+      border:1px solid var(--line);
+      border-radius:30px;
+      background:rgba(12,18,35,.84);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand{display:flex;flex-direction:column;gap:6px}
+    .title{
+      font-size:clamp(26px, 3vw, 40px);
+      font-weight:900;
+      line-height:1.05;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(17,24,43,.9);
+      color:var(--muted);
+      font-size:13px;
+      white-space:nowrap;
+    }
+
     .grid{display:grid;gap:16px}
-    .menu{grid-template-columns:repeat(3,minmax(0,1fr))}
-    @media (max-width: 900px){.menu,.layout{grid-template-columns:1fr}.sidebar{order:2}}
-    .card{border-radius:28px;padding:18px;text-align:left;cursor:pointer;transition:.18s transform,.18s border-color,.18s background}
-    .card:hover{transform:translateY(-2px);border-color:#3b4c7d;background:#141f37}
-    .card h2{margin:12px 0 8px;font-size:22px}
-    .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.75}
-    .icon{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#9b7bff);font-size:22px}
-    .layout{display:grid;grid-template-columns:280px 1fr;gap:16px}
-    .panel{border-radius:28px;padding:18px}
-    .sidebtn,.btn,select,input[type="text"]{border-radius:14px;border:1px solid var(--line);background:#10182d;color:var(--text);padding:12px 14px}
-    .sidebtn,.btn{cursor:pointer;transition:.15s opacity,.15s transform,.15s background}
-    .sidebtn:hover,.btn:hover{background:#16213b}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),#8f7bff);border:none}
-    .btn.good{background:linear-gradient(135deg,#1dbf7f,#2ed28e);border:none;color:#08151e}
-    .btn.bad{background:linear-gradient(135deg,#ff7f7f,#ff5f6d);border:none}
-    .btn.warn{background:linear-gradient(135deg,#f2b44b,#ffd166);border:none;color:#241600}
-    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .menu-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .layout-grid{grid-template-columns:280px minmax(0,1fr)}
+    .challenge-grid{grid-template-columns:280px minmax(0,1fr)}
+    @media (max-width: 1000px){
+      .menu-grid,.layout-grid,.challenge-grid{grid-template-columns:1fr}
+    }
+
+    .card,.panel,.sidebar{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .card{
+      text-align:left;
+      padding:18px;
+      cursor:pointer;
+      transition:transform .18s ease, border-color .18s ease, background .18s ease;
+      min-height:210px;
+    }
+    .card:hover{
+      transform:translateY(-3px);
+      border-color:rgba(120,136,255,.58);
+      background:rgba(18,27,51,.96);
+    }
+    .card-icon{
+      width:48px;height:48px;border-radius:18px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--accent),#a18cff);
+      box-shadow:0 14px 32px rgba(120,136,255,.24);
+      font-size:22px;font-weight:800;color:white;
+    }
+    .card h2{margin:14px 0 8px;font-size:22px;line-height:1.2}
+    .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.8}
+    .card-foot{
+      margin-top:18px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(8,14,28,.55);
+      color:#dce2f7;
+      font-size:13px;
+    }
+
+    .panel,.sidebar{padding:18px}
+    .sidebar{align-self:start}
+    .section-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .section-title{
+      margin:0;
+      font-size:24px;
+      line-height:1.15;
+      font-weight:900;
+    }
+    .section-sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    .btn,.choice,.side-item,.toggle{
+      border:1px solid var(--line);
+      background:rgba(12,18,35,.92);
+      color:var(--text);
+      border-radius:15px;
+      cursor:pointer;
+      transition:transform .15s ease, background .15s ease, border-color .15s ease, opacity .15s ease;
+    }
+    .btn,.choice{padding:11px 14px}
+    .btn:hover,.choice:hover,.side-item:hover,.toggle:hover{
+      background:rgba(20,30,54,.95);
+      border-color:rgba(120,136,255,.46);
+    }
+    .btn.primary{
+      border:none;background:linear-gradient(135deg,var(--accent),#9b7bff);
+      color:white;box-shadow:0 12px 28px rgba(120,136,255,.22)
+    }
+    .btn.good{
+      border:none;background:linear-gradient(135deg,#1dbf7f,#2dd08d);
+      color:#07151d;box-shadow:0 12px 28px rgba(35,196,131,.18)
+    }
+    .btn.danger{
+      border:none;background:linear-gradient(135deg,#ff7b7b,#ff5d6e);color:white
+    }
+    .btn:disabled{
+      opacity:.45;cursor:not-allowed;transform:none
+    }
+    .choice{min-width:84px}
+    .choice.selected{
+      border-color:rgba(35,196,131,.75);
+      background:rgba(35,196,131,.12)
+    }
+
     .stack{display:grid;gap:12px}
-    .small{font-size:13px;color:var(--muted);line-height:1.7}
-    .heading{font-size:24px;font-weight:800;margin:0 0 4px}
-    .scorebox{padding:16px;border-radius:20px;background:linear-gradient(180deg, rgba(109,124,255,.15), rgba(109,124,255,.07));border:1px solid rgba(109,124,255,.35)}
-    .list{display:grid;gap:10px}
-    .item{border:1px solid var(--line);background:var(--panel2);padding:12px 14px;border-radius:16px}
-    .active{outline:2px solid rgba(109,124,255,.65);background:#161f38}
-    .face{display:inline-flex;justify-content:center;align-items:center;width:38px;height:38px;border-radius:999px;font-weight:800;margin-right:8px}
-    .face1{background:rgba(35,196,131,.15);color:#68f0ad}
-    .face0{background:rgba(255,107,107,.15);color:#ff9a9a}
+    .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
     .muted{color:var(--muted)}
-    .progress{height:10px;background:#1b2642;border-radius:999px;overflow:hidden;border:1px solid var(--line)}
-    .progress > div{height:100%;background:linear-gradient(90deg,var(--accent),#9f8cff)}
-    .spacer{height:8px}
+    .small{font-size:13px;line-height:1.75}
+    .tiny{font-size:12px;color:var(--muted)}
+
+    .box{
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:var(--panel2);
+    }
+    .score-box{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid rgba(120,136,255,.35);
+      background:linear-gradient(180deg, rgba(120,136,255,.12), rgba(120,136,255,.06));
+    }
+    .kicker{
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.12em;
+    }
+    .score-number{
+      margin-top:4px;
+      font-size:38px;
+      font-weight:900;
+      line-height:1.05;
+    }
+    .divider{height:1px;background:var(--line);margin:16px 0}
+
+    .history-list{display:grid;gap:8px}
+    .history-item{
+      border:1px solid var(--line);
+      background:rgba(8,14,28,.58);
+      border-radius:16px;
+      padding:12px 14px;
+      font-size:13px;
+      line-height:1.7
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(8,14,28,.55);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .input{
+      width:100%;
+      border:1px solid var(--line);
+      background:rgba(8,14,28,.72);
+      color:var(--text);
+      border-radius:14px;
+      padding:12px 14px;
+      outline:none;
+    }
+    .input:focus{
+      border-color:rgba(120,136,255,.72);
+      box-shadow:0 0 0 3px rgba(120,136,255,.12);
+    }
+
+    .faces{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      min-height:40px;
+    }
+    .face{
+      width:38px;height:38px;border-radius:999px;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:13px;
+    }
+    .face.success{background:rgba(35,196,131,.16);color:#8ff1be}
+    .face.fail{background:rgba(255,107,107,.16);color:#ffb1b1}
+    .face.neutral{background:rgba(148,163,184,.16);color:#d9e0f7}
+
+    .progress{
+      height:12px;
+      background:rgba(16,23,42,.95);
+      border:1px solid var(--line);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .progress > div{
+      height:100%;
+      background:linear-gradient(90deg,var(--accent),#9b7bff);
+    }
+
+    .binary-input{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .binary-prefix{
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.6px;
+      color:#e7ebff;
+    }
+    .bit-control{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      min-width:50px;
+    }
+    .bit-control input[type="range"]{
+      width:52px;
+      height:160px;
+      writing-mode: bt-lr;
+      -webkit-appearance: slider-vertical;
+      appearance:auto;
+      accent-color:var(--accent);
+    }
+    .bit-label{
+      width:30px;
+      text-align:center;
+      font-weight:800;
+      padding:4px 0;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(8,14,28,.72);
+      font-size:13px;
+    }
+
+    .toggle{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+    }
+    .switch{
+      width:58px;
+      height:32px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      position:relative;
+      background:rgba(148,163,184,.12);
+      flex:0 0 auto;
+    }
+    .switch::after{
+      content:"";
+      position:absolute;
+      width:24px;
+      height:24px;
+      top:3px;
+      left:4px;
+      border-radius:50%;
+      background:#dbe2fb;
+      transition:left .18s ease, background .18s ease;
+    }
+    .toggle.on .switch{background:rgba(35,196,131,.16)}
+    .toggle.on .switch::after{left:30px;background:#8ff1be}
+
+    .result-grid{
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+    @media (max-width: 900px){ .result-grid{grid-template-columns:1fr} }
+
+    .result-card{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(8,14,28,.58);
+      padding:14px;
+    }
+
+    .mascot-card{
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:rgba(8,14,28,.58);
+      padding:14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .mascot-frame{
+      width:116px;
+      min-height:78px;
+      border-radius:18px;
+      border:1px dashed rgba(148,163,184,.55);
+      background:rgba(15,23,42,.72);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      padding:10px;
+      flex:0 0 auto;
+    }
+    .mascot-frame-label{
+      font-size:12px;
+      color:var(--muted);
+      letter-spacing:.06em;
+    }
+    .mascot-frame-name{
+      font-size:12px;
+      color:#e7ebff;
+      text-align:center;
+      word-break:break-all;
+    }
+    .mascot-text{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .mascot-text strong{font-size:14px}
+    .mascot-text span{font-size:12px;color:var(--muted);line-height:1.6}
+
+    .freeplay-side-games{
+      display:grid;
+      gap:10px;
+      margin-top:14px;
+    }
+    .side-item{
+      text-align:left;
+      padding:12px 14px;
+    }
+    .side-item.active{
+      border-color:rgba(120,136,255,.7);
+      background:rgba(120,136,255,.11);
+    }
+    .side-name{
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      font-size:14px;
+      font-weight:700;
+    }
+    .side-desc{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .footer-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+
     .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    .toggle{display:inline-flex;align-items:center;gap:10px}
-    .switch{width:58px;height:32px;border-radius:999px;border:1px solid var(--line);background:#0f172a;position:relative;cursor:pointer}
-    .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#cbd5e1;transition:.2s}
-    .on .switch{background:rgba(35,196,131,.15)}
-    .on .knob{left:31px;background:#7bf0ba}
-    .tag{padding:4px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px}
-    .input{width:100%}
   </style>
 </head>
 <body>
-<div id="app" class="app"></div>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="title">Bernoulli Lab</div>
+        <div class="subtitle">ベルヌーイ過程を遊びながら学ぶためのブラウザゲームです。<br>3連続チャレンジ、フリープレイ、設定を備えています。</div>
+      </div>
+      <div class="status-pill" id="musicStatus">♪ Music OFF</div>
+    </header>
+    <main id="app"></main>
+  </div>
 
-<script>
-(() => {
-  const GAME_LIST = [
-    { id: "hunter", name: "確率ハンター", icon: "🎯", desc: "未知の成功確率 p を推定します。" },
-    { id: "streak", name: "ストリーク・チャレンジ", icon: "⚡", desc: "連続成功を伸ばして高得点を狙います。" },
-    { id: "estimate", name: "確率推定ゲーム", icon: "🏁", desc: "続けるか、やめるかを選びます。" },
-    { id: "binary", name: "2進数ベルヌーイ", icon: "①", desc: "7回の試行から 2進数表記を推測します。" },
-    { id: "magyar", name: "マジャールのコイン", icon: "🪙", desc: "10セットの観測から p を当てます。" },
-  ];
+  <script>
+    const GAME_META = [
+      { id: "hunter", name: "確率ハンター", icon: "🎯", desc: "未知の成功確率 p を推定します。" },
+      { id: "streak", name: "ストリーク・チャレンジ", icon: "⚡", desc: "成功を連ねてから終了し、得点を確定します。" },
+      { id: "estimate", name: "確率推定ゲーム", icon: "🏁", desc: "続けるか、やめるかを選びながら得点を積みます。" },
+      { id: "binary", name: "2進数ベルヌーイ", icon: "①", desc: "7回の試行とスライダ入力で 2進数表記を推測します。" },
+      { id: "magyar", name: "マジャールのコイン", icon: "🪙", desc: "10ラウンドで p を当てていきます。" },
+    ];
 
-  const state = {
-    mode: "menu", // menu, freeplay, settings, challenge
-    settings: { music: false },
-    selectedGame: "hunter",
-    challenge: { games: [], index: 0, total: 0, history: [], done: false },
-    games: {}
-  };
+    const app = document.getElementById("app");
+    const musicStatus = document.getElementById("musicStatus");
 
-  const gameState = () => ({
-    hunter: newHunter(),
-    streak: newStreak(),
-    estimate: newEstimate(),
-    binary: newBinary(),
-    magyar: newMagyar(),
-  });
+    const state = {
+      mode: "menu",
+      selectedGame: "hunter",
+      settings: { music: false, characterImageName: "mascot.png" },
+      challenge: { games: [], index: 0, total: 0, history: [], done: false },
+      games: null
+    };
 
-  function newHunter() {
-    return { p: Math.random(), trials: [], guess: "0.50", done: false, score: null };
-  }
-  function newStreak() {
-    return { p: 0.1 + Math.random()*0.8, streak: 0, ended: false, score: null, last: "" };
-  }
-  function newEstimate() {
-    return { p: Math.random(), turn: 0, score: 0, done: false, log: [] };
-  }
-  function newBinary() {
-    const k = Math.floor(Math.random()*128);
-    return { p: k/128, k, trials: [], guess: "", done: false, score: null };
-  }
-  function newMagyar() {
-    return { p: [0.2,0.5,0.8][Math.floor(Math.random()*3)], round: 0, matches: 0, firsts: [], guess: null, done: false, score: null };
-  }
+    let audioCtx = null;
+    let osc = null;
+    let musicTimer = null;
 
-  state.games = gameState();
-
-  let audioCtx = null;
-  let osc = null;
-  let gain = null;
-
-  function startMusic(){
-    if (audioCtx) return;
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return;
-    audioCtx = new Ctx();
-    osc = audioCtx.createOscillator();
-    gain = audioCtx.createGain();
-    osc.type = "sine";
-    osc.frequency.value = 220;
-    gain.gain.value = 0.02;
-    osc.connect(gain).connect(audioCtx.destination);
-    osc.start();
-  }
-  function stopMusic(){
-    try { osc && osc.stop(); } catch(e){}
-    try { audioCtx && audioCtx.close(); } catch(e){}
-    osc = null; gain = null; audioCtx = null;
-  }
-
-  function rndChoice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-  function sampleBernoulli(p){ return Math.random() < p; }
-  function randUnique(arr, k){
-    const a = [...arr];
-    for(let i=a.length-1;i>0;i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
+    function randInt(n){ return Math.floor(Math.random() * n); }
+    function choice(arr){ return arr[randInt(arr.length)]; }
+    function shuffle(arr){
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--){
+        const j = randInt(i + 1);
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
     }
-    return a.slice(0,k);
-  }
+    function sampleBernoulli(p){ return Math.random() < p ? 1 : 0; }
+    function clamp(x, lo, hi){ return Math.max(lo, Math.min(hi, x)); }
+    function formatPct(p){ return `${Math.round(p * 100)}%`; }
+    function formatBinary(bits){ return `0.${bits.join("")}`; }
 
-  function resetGames(){
-    state.games = gameState();
-  }
+    function newGames(){
+      return {
+        hunter: {
+          p: Math.random(),
+          trials: [],
+          guess: "0.50",
+          done: false,
+          score: null
+        },
+        streak: {
+          p: 0.1 + Math.random() * 0.8,
+          streak: 0,
+          score: 0,
+          ended: false,
+          log: [],
+          done: false
+        },
+        estimate: {
+          p: Math.random(),
+          turn: 0,
+          score: 0,
+          done: false,
+          lastMessage: "",
+          log: []
+        },
+        binary: {
+          pInt: randInt(128),
+          get p(){ return this.pInt / 128; },
+          trials: [],
+          bits: [0,0,0,0,0,0,0],
+          done: false,
+          score: null
+        },
+        magyar: {
+          round: 1,
+          roundResult: 0,
+          correctCount: 0,
+          guess: null,
+          done: false,
+          score: null,
+          history: [],
+          lastResult: "",
+          trials: [],
+          guessLocked: false,
+          p: choice([0.2, 0.5, 0.8])
+        }
+      };
+    }
 
-  function startChallenge(){
-    resetGames();
-    state.challenge = { games: randUnique(GAME_LIST.map(g=>g.id), 3), index: 0, total: 0, history: [], done: false };
-    state.selectedGame = state.challenge.games[0];
-    state.mode = "challenge";
-    render();
-  }
+    function resetAllGames(){ state.games = newGames(); }
 
-  function finishGame(gameId, score){
-    if (state.mode === "challenge") {
-      state.challenge.history.push({ game: gameId, score });
-      state.challenge.total += score;
-      state.challenge.index += 1;
-      if (state.challenge.index >= state.challenge.games.length) {
-        state.challenge.done = true;
-      } else {
-        state.selectedGame = state.challenge.games[state.challenge.index];
+    function startMusic(){
+      if (!state.settings.music) return;
+      if (audioCtx) return;
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      audioCtx = new Ctx();
+      osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = 220;
+      gain.gain.value = 0.03;
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+
+      let t = 0;
+      musicTimer = setInterval(() => {
+        if (!audioCtx || !osc) return;
+        const notes = [220, 247, 262, 294, 330, 294, 262, 247];
+        osc.frequency.setValueAtTime(notes[t % notes.length], audioCtx.currentTime);
+        t++;
+      }, 420);
+    }
+
+    function stopMusic(){
+      if (musicTimer){
+        clearInterval(musicTimer);
+        musicTimer = null;
+      }
+      try { if (osc) osc.stop(); } catch (e) {}
+      try { if (audioCtx) audioCtx.close(); } catch (e) {}
+      audioCtx = null;
+      osc = null;
+    }
+
+    function setMusicEnabled(enabled){
+      state.settings.music = enabled;
+      if (enabled) startMusic();
+      else stopMusic();
+      render();
+    }
+
+    function startChallenge(){
+      resetAllGames();
+      state.challenge.games = shuffle(GAME_META.map(g => g.id)).slice(0, 3);
+      state.challenge.index = 0;
+      state.challenge.total = 0;
+      state.challenge.history = [];
+      state.challenge.done = false;
+      state.selectedGame = state.challenge.games[0];
+      state.mode = "challenge";
+      render();
+    }
+
+    function finishGame(gameId, score){
+      if (state.mode === "challenge"){
+        state.challenge.history.push({ game: gameId, score });
+        state.challenge.total += score;
+        state.challenge.index += 1;
+        if (state.challenge.index >= state.challenge.games.length){
+          state.challenge.done = true;
+        } else {
+          state.selectedGame = state.challenge.games[state.challenge.index];
+        }
       }
       render();
-      return;
     }
-    state.games[gameId].score = score;
-    render();
-  }
 
-  function setMode(mode){
-    state.mode = mode;
-    render();
-  }
+    function gameMetaById(id){
+      return GAME_META.find(g => g.id === id);
+    }
 
-  function menuView(){
-    return `
-      <div class="grid menu">
-        ${menuCard("3連続チャレンジ","3つのミニゲームを重複なしでランダム選択し、合計得点を競います。","🧪",()=>startChallenge(), "linear-gradient(135deg,#6d7cff,#9b7bff)")}
-
-        ${menuCard("フリープレイ","好きなミニゲームを自由に選んで遊べます。","▶",()=>{ state.mode="freeplay"; render(); }, "linear-gradient(135deg,#1dbf7f,#2ed28e)")}
-
-        ${menuCard("設定","音楽の有無を切り替えます。","⚙",()=>{ state.mode="settings"; render(); }, "linear-gradient(135deg,#ffb84d,#ff6a7a)")}
-      </div>
-    `;
-  }
-
-  function menuCard(title, desc, icon, onclick, bg){
-    return `
-      <button class="card" data-action="menu-card">
-        <div class="icon" style="background:${bg}">${icon}</div>
-        <h2>${title}</h2>
-        <p>${desc}</p>
-        <div class="spacer"></div>
-        <div class="pill">開く →</div>
-      </button>
-    `;
-  }
-
-  function sidebarView(){
-    const items = GAME_LIST.map(g => `
-      <button class="sidebtn ${state.selectedGame===g.id ? "active" : ""}" data-game="${g.id}" style="width:100%;text-align:left;margin-bottom:10px">
-        <div class="row" style="justify-content:space-between">
-          <div class="row">
-            <span class="tag">${g.icon}</span>
-            <strong>${g.name}</strong>
-          </div>
-          <span class="tag">選択</span>
-        </div>
-        <div class="small" style="margin-top:6px">${g.desc}</div>
-      </button>
-    `).join("");
-
-    return `
-      <div class="panel sidebar">
-        <div class="row" style="justify-content:space-between">
+    function header(title, subtitle){
+      return `
+        <div class="section-head">
           <div>
-            <div class="heading">フリープレイ</div>
-            <div class="small">ミニゲームを選択してください</div>
+            <h2 class="section-title">${title}</h2>
+            <div class="section-sub">${subtitle}</div>
           </div>
           <button class="btn" data-back>戻る</button>
         </div>
-        <div class="spacer"></div>
-        ${items}
-      </div>
-    `;
-  }
+      `;
+    }
 
-  function currentGameView(gameId, challenge=false){
-    const g = state.games[gameId];
-    if (gameId === "hunter") return hunterView(g, challenge);
-    if (gameId === "streak") return streakView(g, challenge);
-    if (gameId === "estimate") return estimateView(g, challenge);
-    if (gameId === "binary") return binaryView(g, challenge);
-    if (gameId === "magyar") return magyarView(g, challenge);
-    return "";
-  }
-
-  function hunterView(g, challenge){
-    return `
-      <div class="panel">
-        ${gameHeader("確率ハンター","未知の成功確率 p を推定します。")}
-        <div class="grid" style="grid-template-columns:1.1fr .9fr">
-          <div class="stack">
-            <div class="item">試行回数: <strong>${g.trials.length}</strong></div>
-            <div class="item">成功回数: <strong>${g.trials.filter(Boolean).length}</strong></div>
-            <div class="row">
-              <button class="btn primary" data-hunter-trial>1回試行</button>
-              <button class="btn" data-hunter-submit>推定値を提出</button>
-            </div>
-            <label class="stack">
-              <div class="small">推定値 p</div>
-              <input class="input" type="text" value="${g.guess}" data-hunter-guess />
-            </label>
-            ${g.done ? `<div class="scorebox">得点: <strong style="font-size:28px">${g.score}</strong></div>` : ""}
+    function mascotCard(){
+      return `
+        <div class="mascot-card">
+          <div class="mascot-frame" aria-label="キャラクター挿入枠">
+            <div class="mascot-frame-label">挿入枠</div>
+            <div class="mascot-frame-name mono">${state.settings.characterImageName}</div>
           </div>
-          <div class="stack">
-            <div class="item">
-              <div class="small">直近の試行結果</div>
-              <div class="spacer"></div>
-              <div>${g.trials.length ? g.trials.slice().reverse().map(v=>`<span class="face ${v ? "face1":"face0"}">${v?1:0}</span>`).join("") : `<span class="muted">まだ試行がありません。</span>`}</div>
-            </div>
-            <div class="item small mono">Score = 100 - 100 |p - 推定p| - n</div>
+          <div class="mascot-text">
+            <strong>Lab Mascot</strong>
+            <span>ここに既存のキャラクター画像を差し込めます。<br>画像名は設定画面で変更できます。</span>
           </div>
         </div>
-      </div>
-    `;
-  }
+      `;
+    }
 
-  function streakView(g, challenge){
-    return `
-      <div class="panel">
-        ${gameHeader("ストリーク・チャレンジ",`成功率 p = ${pct(g.p)} が表示されます。`)}
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <div class="stack">
-            <div class="item">連続成功数: <strong style="font-size:34px">${g.streak}</strong></div>
-            <div class="item">状態: <strong>${g.ended ? "終了" : "進行中"}</strong></div>
-            <div class="row">
-              <button class="btn good" data-streak-run>実行</button>
-              <button class="btn" data-streak-end>終了</button>
+    function menuView(){
+      return `
+        <div class="grid menu-grid">
+          <button class="card" data-menu-action="challenge">
+            <div class="card-icon">🧪</div>
+            <h2>3連続チャレンジ</h2>
+            <p>5つのゲームから 3 つを重複なく選び、その合計得点で最終結果を出します。</p>
+            <div class="card-foot">開始 →</div>
+          </button>
+          <button class="card" data-menu-action="freeplay">
+            <div class="card-icon">🎮</div>
+            <h2>フリープレイ</h2>
+            <p>好きなミニゲームを自由に選んで、何度でも遊べます。</p>
+            <div class="card-foot">開始 →</div>
+          </button>
+          <button class="card" data-menu-action="settings">
+            <div class="card-icon">⚙</div>
+            <h2>設定</h2>
+            <p>音楽の有無を切り替えます。</p>
+            <div class="card-foot">開く →</div>
+          </button>
+        </div>
+
+        <div style="margin-top:16px; max-width:480px;">
+          ${mascotCard()}
+        </div>
+      `;
+    }
+
+    function settingsView(){
+      return `
+        <div class="panel" style="max-width:780px;margin:0 auto;">
+          ${header("設定","音楽の有無を切り替えます。")}
+          <div class="box">
+            <div class="row" style="justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:800;font-size:16px;">音楽</div>
+                <div class="small muted">BGM を再生するかどうかを切り替えます。</div>
+              </div>
+              <button class="toggle ${state.settings.music ? "on" : ""}" data-toggle-music>
+                <span class="switch"></span>
+                <span>${state.settings.music ? "ON" : "OFF"}</span>
+              </button>
             </div>
-            ${g.score !== null ? `<div class="scorebox">得点: <strong style="font-size:28px">${g.score}</strong></div>` : ""}
           </div>
-          <div class="item small">
-            成功するたびに連続数が増えます。<br>
-            終了を選ぶと、その時点の <span class="mono">streak²</span> が得点です。<br>
-            失敗した場合は 0 点として終了します。
+
+          <div style="margin-top:16px; max-width:420px;">
+            ${mascotCard()}
           </div>
         </div>
-      </div>
-    `;
-  }
+      `;
+    }
 
-  function estimateView(g, challenge){
-    return `
-      <div class="panel">
-        ${gameHeader("確率推定ゲーム",`成功率 p = ${pct(g.p)} が表示されます。最大10回です。`)}
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <div class="stack">
-            <div class="item">ターン: <strong>${g.turn} / 10</strong></div>
-            <div class="item">累積スコア: <strong style="font-size:34px">${g.score}</strong></div>
-            <div class="row">
-              <button class="btn primary" data-est-continue ${g.done ? "disabled" : ""}>続ける</button>
-              <button class="btn" data-est-stop ${g.done ? "disabled" : ""}>やめる</button>
+    function freeplayView(){
+      return `
+        <div class="layout-grid">
+          <div class="sidebar">
+            <div class="section-head" style="margin-bottom:0;">
+              <div>
+                <h2 class="section-title">フリープレイ</h2>
+                <div class="section-sub">ミニゲームを選択してください。</div>
+              </div>
+              <button class="btn" data-back>戻る</button>
             </div>
-            ${g.done ? `<div class="scorebox">確定得点: <strong style="font-size:28px">${g.score}</strong></div>` : ""}
-            <div class="small muted">${g.log[0] || "まだ進行していません。"}</div>
+
+            <div style="margin-top:14px;">
+              ${mascotCard()}
+            </div>
+
+            <div class="freeplay-side-games">
+              ${GAME_META.map(g => `
+                <button class="side-item ${state.selectedGame === g.id ? "active" : ""}" data-select-game="${g.id}">
+                  <div class="side-name">
+                    <span>${g.icon} ${g.name}</span>
+                    <span class="tag">選択</span>
+                  </div>
+                  <div class="side-desc">${g.desc}</div>
+                </button>
+              `).join("")}
+            </div>
           </div>
-          <div class="item">
-            <div class="small">履歴</div>
-            <div class="spacer"></div>
-            <div class="list">${g.log.length ? g.log.map(x=>`<div class="item">${x}</div>`).join("") : `<div class="muted">履歴なし</div>`}</div>
-          </div>
+
+          <div>${renderGame(state.selectedGame, false)}</div>
         </div>
-      </div>
-    `;
-  }
+      `;
+    }
 
-  function binaryView(g, challenge){
-    const bits = g.trials.join("");
-    return `
-      <div class="panel">
-        ${gameHeader("2進数ベルヌーイ","p は 1/128 の整数倍です。7回の試行結果を見て推測します。")}
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <div class="stack">
-            <div class="item">試行数: <strong>${g.trials.length} / 7</strong></div>
-            <div class="row">
-              <button class="btn primary" data-bin-run ${g.done || g.trials.length>=7 ? "disabled" : ""}>1回試行</button>
-              <button class="btn" data-bin-submit ${g.done || g.trials.length<7 ? "disabled" : ""}>提出</button>
-            </div>
-            <label class="stack">
-              <div class="small">2進数小数表記の推測（例: .0101010）</div>
-              <input class="input" type="text" value="${g.guess}" data-bin-guess placeholder=".0000000" ${g.done ? "disabled" : ""} />
-            </label>
-            ${g.done ? `<div class="scorebox">得点: <strong style="font-size:28px">${g.score}</strong></div>` : ""}
-            <div class="small muted">秘密の p は表示されません。</div>
-          </div>
-          <div class="item">
-            <div class="small">試行結果</div>
-            <div class="spacer"></div>
-            <div>${g.trials.length ? g.trials.map(v=>`<span class="face ${v ? "face1":"face0"}">${v}</span>`).join("") : `<span class="muted">未実行</span>`}</div>
-            <div class="spacer"></div>
-            <div class="small mono">現在の入力: ${escapeHtml(g.guess || "")}</div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function magyarView(g, challenge){
-    const guessLabel = g.guess === null ? "未選択" : String(g.guess);
-    return `
-      <div class="panel">
-        ${gameHeader("マジャールのコイン",`p は 0.2 / 0.5 / 0.8 のいずれかです。`)}
-        <div class="grid" style="grid-template-columns:1fr 1fr">
-          <div class="stack">
-            <div class="item">セット数: <strong>${g.round} / 10</strong></div>
-            <div class="item">一致したセット数: <strong>${g.matches}</strong></div>
-            <div class="item">1回目の面: <strong>${g.firsts.length ? g.firsts.join(" / ") : "未実行"}</strong></div>
-            <div class="row">
-              <button class="btn primary" data-mag-run ${g.done || g.round>=10 ? "disabled" : ""}>1セット実行</button>
-              <button class="btn good" data-mag-finalize ${g.round<10 || g.guess===null || g.done ? "disabled" : ""}>推測を確定</button>
-            </div>
-            <div class="row">
-              <button class="btn ${g.guess===0.2 ? "good" : ""}" data-mag-guess="0.2">0.2</button>
-              <button class="btn ${g.guess===0.5 ? "good" : ""}" data-mag-guess="0.5">0.5</button>
-              <button class="btn ${g.guess===0.8 ? "good" : ""}" data-mag-guess="0.8">0.8</button>
-            </div>
-            ${g.done ? `<div class="scorebox">得点: <strong style="font-size:28px">${g.score}</strong></div>` : ""}
-          </div>
-          <div class="item small">
-            10回のセットを行い、各セットで2回トスします。<br>
-            2回の結果が一致した回数と、各セットの1回目の面が表示されます。<br>
-            予想が当たると 10 点です。
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function challengeView(){
-    const games = state.challenge.games;
-    const current = games[state.challenge.index];
-    const label = GAME_LIST.find(x=>x.id===current)?.name || "";
-    return `
-      <div class="layout">
-        <div class="panel sidebar">
-          <div class="row" style="justify-content:space-between">
+    function challengeView(){
+      const currentId = state.challenge.games[state.challenge.index];
+      const left = `
+        <div class="sidebar">
+          <div class="section-head" style="margin-bottom:0;">
             <div>
-              <div class="heading">3連続チャレンジ</div>
-              <div class="small">${state.challenge.index + 1} / ${games.length} 回目</div>
+              <h2 class="section-title">3連続チャレンジ</h2>
+              <div class="section-sub">${state.challenge.index + 1} / ${state.challenge.games.length} 回目です。</div>
             </div>
             <button class="btn" data-back>終了</button>
           </div>
-          <div class="spacer"></div>
-          ${games.map((g,i)=>`
-            <div class="item ${i===state.challenge.index ? "active" : ""}">
-              <div class="row" style="justify-content:space-between">
-                <strong>${i+1}. ${GAME_LIST.find(x=>x.id===g)?.name}</strong>
-                <span class="tag">${i < state.challenge.index ? "完了" : i===state.challenge.index ? "実行中" : "待機"}</span>
-              </div>
-              ${state.challenge.history[i] ? `<div class="small">得点: ${state.challenge.history[i].score}</div>` : ""}
-            </div>
-          `).join("")}
-          <div class="spacer"></div>
-          <div class="scorebox">
-            <div class="small">合計得点</div>
-            <div style="font-size:34px;font-weight:800">${state.challenge.total}</div>
+
+          <div style="margin-top:14px;">
+            ${mascotCard()}
+          </div>
+
+          <div class="freeplay-side-games">
+            ${state.challenge.games.map((g, i) => {
+              const label = gameMetaById(g)?.name ?? g;
+              return `
+                <div class="side-item ${i === state.challenge.index ? "active" : ""}">
+                  <div class="side-name">
+                    <span>${i + 1}. ${label}</span>
+                    <span class="tag">${i < state.challenge.index ? "完了" : i === state.challenge.index ? "実行中" : "待機"}</span>
+                  </div>
+                  <div class="side-desc">${i < state.challenge.index ? `得点: ${state.challenge.history[i]?.score ?? 0}` : "p はゲームごとに変更されます。"}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="score-box">
+            <div class="kicker">合計得点</div>
+            <div class="score-number">${state.challenge.total}</div>
           </div>
         </div>
-        <div>${state.challenge.done ? challengeResultView() : currentGameView(current, true)}</div>
-      </div>
-    `;
-  }
+      `;
 
-  function challengeResultView(){
-    return `
-      <div class="panel">
-        <div class="heading">チャレンジ完了</div>
-        <div class="small">3つのミニゲームの合計結果です。</div>
-        <div class="spacer"></div>
-        <div class="grid" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-          ${state.challenge.history.map((h,i)=>`
-            <div class="item">
-              <div class="small">${i+1} 回目</div>
-              <div><strong>${GAME_LIST.find(x=>x.id===h.game)?.name}</strong></div>
-              <div style="margin-top:8px;font-size:24px;font-weight:800">${h.score} 点</div>
-            </div>
-          `).join("")}
-        </div>
-        <div class="spacer"></div>
-        <div class="scorebox">
-          <div class="small">最終得点</div>
-          <div style="font-size:42px;font-weight:900">${state.challenge.total}</div>
-        </div>
-        <div class="spacer"></div>
-        <div class="row">
-          <button class="btn primary" data-replay>もう一度</button>
-          <button class="btn" data-menu>メニューへ</button>
-        </div>
-      </div>
-    `;
-  }
+      const right = state.challenge.done
+        ? challengeResultView()
+        : renderGame(currentId, true);
 
-  function settingsView(){
-    return `
-      <div class="panel" style="max-width:760px;margin:0 auto">
-        <div class="row" style="justify-content:space-between">
-          <div>
-            <div class="heading">設定</div>
-            <div class="small">音楽の有無を切り替えます。</div>
-          </div>
-          <button class="btn" data-back>戻る</button>
+      return `
+        <div class="challenge-grid">
+          ${left}
+          <div>${right}</div>
         </div>
-        <div class="spacer"></div>
-        <div class="item">
-          <div class="row" style="justify-content:space-between">
+      `;
+    }
+
+    function challengeResultView(){
+      return `
+        <div class="panel">
+          <div class="section-head">
             <div>
-              <strong>音楽</strong>
-              <div class="small">BGM を再生します。</div>
+              <h2 class="section-title">チャレンジ完了</h2>
+              <div class="section-sub">3つのミニゲームの合計結果です。</div>
             </div>
-            <div class="toggle ${state.settings.music ? "on" : ""}">
-              <div class="switch" data-music-toggle><div class="knob"></div></div>
+            <button class="btn" data-back>メニューへ</button>
+          </div>
+
+          <div class="result-grid">
+            ${state.challenge.history.map((h, i) => `
+              <div class="result-card">
+                <div class="kicker">${i + 1} 回目</div>
+                <div style="margin-top:4px;font-size:18px;font-weight:800;">${gameMetaById(h.game)?.name ?? h.game}</div>
+                <div style="margin-top:10px;font-size:28px;font-weight:900;">${h.score} 点</div>
+              </div>
+            `).join("")}
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="score-box">
+            <div class="kicker">最終得点</div>
+            <div class="score-number">${state.challenge.total}</div>
+          </div>
+
+          <div class="footer-actions">
+            <button class="btn primary" data-replay-challenge>もう一度</button>
+            <button class="btn" data-back>メニューへ</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGame(gameId, challengeMode){
+      if (gameId === "hunter") return hunterView(challengeMode);
+      if (gameId === "streak") return streakView(challengeMode);
+      if (gameId === "estimate") return estimateView(challengeMode);
+      if (gameId === "binary") return binaryView(challengeMode);
+      if (gameId === "magyar") return magyarView(challengeMode);
+      return `<div class="panel">不明なゲームです。</div>`;
+    }
+
+    function hunterView(challengeMode){
+      const g = state.games.hunter;
+      return `
+        <div class="panel">
+          ${header("確率ハンター", `未知の成功確率 p を推定してください。${challengeMode ? "（チャレンジ中）" : ""}`)}
+          <div class="grid" style="grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);">
+            <div class="stack">
+              <div class="box">
+                <div class="row">
+                  <span class="tag">試行回数: ${g.trials.length}</span>
+                  <span class="tag">成功回数: ${g.trials.filter(x => x === 1).length}</span>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                  <button class="btn primary" data-hunter-trial ${g.done ? "disabled" : ""}>1回試行</button>
+                  <button class="btn" data-hunter-submit ${g.done ? "disabled" : ""}>推定値を提出</button>
+                </div>
+                <div style="margin-top:12px;">
+                  <div class="small muted">推定値 p</div>
+                  <input class="input mono" data-hunter-guess value="${g.guess}" ${g.done ? "disabled" : ""} placeholder="0.50" />
+                </div>
+              </div>
+
+              ${g.done ? `
+                <div class="score-box">
+                  <div class="kicker">得点</div>
+                  <div class="score-number">${g.score}</div>
+                </div>
+              ` : ""}
+
+              <div class="box">
+                <div class="small muted">直近の試行結果</div>
+                <div class="faces" style="margin-top:10px;">
+                  ${g.trials.length ? g.trials.slice().reverse().map(v => `<span class="face ${v ? "success" : "fail"}">${v}</span>`).join("") : `<span class="muted">まだ試行がありません。</span>`}
+                </div>
+              </div>
+            </div>
+
+            <div class="box">
+              <div class="small muted">得点式</div>
+              <div class="mono small" style="margin-top:8px;">Score = 100 - 100|p - 推定p| - n</div>
+              <div class="divider"></div>
+              <div class="small muted">ルール</div>
+              <div class="small">試行を行うごとにコストがあります。推定値の精度と試行回数の両方が重要です。</div>
             </div>
           </div>
-          <div class="spacer"></div>
-          <div class="small">現在: <strong>${state.settings.music ? "ON" : "OFF"}</strong></div>
         </div>
-      </div>
-    `;
-  }
+      `;
+    }
 
-  function gameHeader(title, subtitle){
-    return `
-      <div class="row" style="justify-content:space-between;align-items:flex-start">
-        <div>
-          <div class="heading">${title}</div>
-          <div class="small">${subtitle}</div>
-        </div>
-        <button class="btn" data-back>戻る</button>
-      </div>
-      <div class="spacer"></div>
-    `;
-  }
+    function streakView(challengeMode){
+      const g = state.games.streak;
+      const multiplier = Math.pow(2, g.streak);
+      return `
+        <div class="panel">
+          ${header("ストリーク・チャレンジ", `成功率 p = ${formatPct(g.p)} が表示されます。${challengeMode ? "（チャレンジ中）" : ""}`)}
+          <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,.95fr);">
+            <div class="stack">
+              <div class="score-box">
+                <div class="kicker">現在の連続成功数</div>
+                <div class="score-number">${g.streak}</div>
+              </div>
 
-  function pct(p){ return `${Math.round(p*100)}%`; }
+              <div class="box">
+                <div class="row">
+                  <button class="btn good" data-streak-run ${g.ended ? "disabled" : ""}>実行</button>
+                  <button class="btn" data-streak-end ${g.ended ? "disabled" : ""}>終了</button>
+                </div>
+                <div class="divider"></div>
+                <div class="small muted">成功するたびに倍率が上昇します。失敗で 0 点になります。終了時は <span class="mono">streak²</span> が得点です。</div>
+              </div>
 
-  function escapeHtml(str){
-    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-  }
+              <div class="box">
+                <div class="row">
+                  <span class="tag">倍率: ×${multiplier}</span>
+                  <span class="tag">p: ${formatPct(g.p)}</span>
+                </div>
+              </div>
 
-  function render(){
-    const app = document.getElementById("app");
-    if (!app) return;
-    app.innerHTML = `
-      <div class="topbar">
-        <div>
-          <div class="title">Bernoulli Lab</div>
-          <div class="sub">ベルヌーイ過程を遊びながら学ぶためのブラウザゲームです。</div>
-        </div>
-        <div class="pill">${state.settings.music ? "♪ Music ON" : "♪ Music OFF"}</div>
-      </div>
-      ${
-        state.mode === "menu" ? menuView()
-        : state.mode === "settings" ? settingsView()
-        : state.mode === "freeplay" ? `
-          <div class="layout">
-            ${sidebarView()}
-            ${currentGameView(state.selectedGame, false)}
+              ${g.score !== null ? `
+                <div class="score-box">
+                  <div class="kicker">得点</div>
+                  <div class="score-number">${g.score}</div>
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="box">
+              <div class="small muted">補足</div>
+              <div class="small">
+                毎回「実行」「終了」のいずれかを選べます。<br>
+                成功を重ねてから終了すると高得点になります。<br>
+                失敗した時点で 0 点です。
+              </div>
+              <div class="divider"></div>
+              <div class="small muted">履歴</div>
+              <div class="history-list" style="margin-top:10px;">
+                ${g.log.length ? g.log.map(x => `<div class="history-item">${x}</div>`).join("") : `<div class="muted small">まだ履歴がありません。</div>`}
+              </div>
+            </div>
           </div>
-        `
-        : state.mode === "challenge" ? challengeView()
-        : ""
-      }
-    `;
+        </div>
+      `;
+    }
 
-    // bind events
-    app.querySelectorAll('[data-back]').forEach(el => el.addEventListener('click', () => {
-      if (state.mode === "freeplay" || state.mode === "settings" || state.mode === "challenge") {
-        state.mode = "menu";
-        render();
-      }
-    }));
-
-    app.querySelectorAll('[data-game]').forEach(el => el.addEventListener('click', () => {
-      state.selectedGame = el.getAttribute("data-game");
-      render();
-    }));
-
-    const menuCards = app.querySelectorAll('[data-action="menu-card"]');
-    if (menuCards[0]) menuCards[0].addEventListener('click', startChallenge);
-    if (menuCards[1]) menuCards[1].addEventListener('click', () => { state.mode="freeplay"; render(); });
-    if (menuCards[2]) menuCards[2].addEventListener('click', () => { state.mode="settings"; render(); });
-
-    const musicToggle = app.querySelector('[data-music-toggle]');
-    if (musicToggle) musicToggle.addEventListener('click', () => {
-      state.settings.music = !state.settings.music;
-      if (state.settings.music) startMusic(); else stopMusic();
-      render();
-    });
-
-    // FREEPLAY and CHALLENGE actions
-    app.querySelectorAll('[data-hunter-trial]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.hunter;
-      if (g.done) return;
-      const s = sampleBernoulli(g.p);
-      g.trials.push(s);
-      render();
-    }));
-    app.querySelectorAll('[data-hunter-guess]').forEach(el => el.addEventListener('input', e => {
-      state.games.hunter.guess = e.target.value;
-    }));
-    app.querySelectorAll('[data-hunter-submit]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.hunter;
-      if (g.done) return;
-      const guess = Math.max(0, Math.min(1, Number(g.guess)));
-      const score = Math.round(100 - 100 * Math.abs(g.p - guess) - g.trials.length);
-      g.done = true; g.score = score;
-      finishGame("hunter", score);
-    }));
-
-    app.querySelectorAll('[data-streak-run]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.streak;
-      if (g.ended) return;
-      const s = sampleBernoulli(g.p);
-      if (s) {
-        g.streak += 1;
-        g.last = "成功";
-      } else {
-        g.ended = true;
-        g.score = 0;
-        g.last = "失敗: 0点";
-        finishGame("streak", 0);
-        return;
-      }
-      render();
-    }));
-    app.querySelectorAll('[data-streak-end]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.streak;
-      if (g.ended) return;
-      g.ended = true;
-      g.score = g.streak * g.streak;
-      finishGame("streak", g.score);
-    }));
-
-    app.querySelectorAll('[data-est-continue]').forEach(el => el.addEventListener('click', () => {
+    function estimateView(challengeMode){
       const g = state.games.estimate;
-      if (g.done || g.turn >= 10) return;
-      const s = sampleBernoulli(g.p);
-      g.turn += 1;
-      if (s) {
-        g.score += 10;
-        g.log.unshift(`${g.turn}回目: 成功 → +10`);
-      } else {
-        g.score -= 20;
-        g.log.unshift(`${g.turn}回目: 失敗 → -20 で即終了`);
-        g.done = true;
-        finishGame("estimate", g.score);
-        return;
-      }
-      if (g.turn >= 10) {
-        g.done = true;
-        finishGame("estimate", g.score);
-        return;
-      }
-      render();
-    }));
-    app.querySelectorAll('[data-est-stop]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.estimate;
-      if (g.done) return;
-      g.done = true;
-      finishGame("estimate", g.score);
-    }));
+      return `
+        <div class="panel">
+          ${header("確率推定ゲーム", `成功率 p = ${formatPct(g.p)} が表示されます。最大10回です。${challengeMode ? "（チャレンジ中）" : ""}`)}
+          <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,.95fr);">
+            <div class="stack">
+              <div class="score-box">
+                <div class="kicker">累積スコア</div>
+                <div class="score-number">${g.score}</div>
+              </div>
 
-    app.querySelectorAll('[data-bin-run]').forEach(el => el.addEventListener('click', () => {
+              <div class="box">
+                <div class="row">
+                  <span class="tag">ターン: ${g.turn} / 10</span>
+                  <span class="tag">${g.done ? "終了" : "進行中"}</span>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                  <button class="btn primary" data-est-continue ${g.done ? "disabled" : ""}>続ける</button>
+                  <button class="btn" data-est-stop ${g.done ? "disabled" : ""}>やめる</button>
+                </div>
+                <div class="divider"></div>
+                <div class="small muted">${g.lastMessage || "まだ進行していません。"}</div>
+              </div>
+
+              ${g.done ? `
+                <div class="score-box">
+                  <div class="kicker">確定得点</div>
+                  <div class="score-number">${g.score}</div>
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="box">
+              <div class="small muted">履歴</div>
+              <div class="history-list" style="margin-top:10px;">
+                ${g.log.length ? g.log.map(x => `<div class="history-item">${x}</div>`).join("") : `<div class="muted small">履歴がありません。</div>`}
+              </div>
+              <div class="divider"></div>
+              <div class="small muted">補足</div>
+              <div class="small">得点は累積スコアです。負になることもあります。</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function binaryView(challengeMode){
       const g = state.games.binary;
-      if (g.done || g.trials.length >= 7) return;
-      g.trials.push(sampleBernoulli(g.p) ? 1 : 0);
-      render();
-    }));
-    app.querySelectorAll('[data-bin-guess]').forEach(el => el.addEventListener('input', e => {
-      state.games.binary.guess = e.target.value.trim();
-    }));
-    app.querySelectorAll('[data-bin-submit]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.binary;
-      if (g.done || g.trials.length < 7) return;
-      const target = "." + [...Array(7)].map((_,i)=> ((g.k >> (6-i)) & 1)).join("");
-      const guess = (g.guess || "").trim();
-      const score = guess === target ? 100 : 0;
-      g.done = true; g.score = score;
-      finishGame("binary", score);
-    }));
+      return `
+        <div class="panel">
+          ${header("2進数ベルヌーイ", "p は 1/128 の整数倍です。7回の試行結果を見て、スライダで 0.(第1位)…(第7位) を入力します。")}
+          <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,.95fr);">
+            <div class="stack">
+              <div class="score-box">
+                <div class="kicker">試行数</div>
+                <div class="score-number">${g.trials.length} / 7</div>
+              </div>
 
-    app.querySelectorAll('[data-mag-run]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.magyar;
-      if (g.done || g.round >= 10) return;
-      const a = sampleBernoulli(g.p) ? "表" : "裏";
-      const b = sampleBernoulli(g.p) ? "表" : "裏";
-      g.round += 1;
-      g.firsts.push(a);
-      if (a === b) g.matches += 1;
-      if (g.round >= 10) {
-        // wait for guess selection and finalize
-      }
-      render();
-    }));
-    app.querySelectorAll('[data-mag-guess]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.magyar;
-      if (g.done) return;
-      g.guess = Number(el.getAttribute("data-mag-guess"));
-      render();
-    }));
-    app.querySelectorAll('[data-mag-finalize]').forEach(el => el.addEventListener('click', () => {
-      const g = state.games.magyar;
-      if (g.done || g.round < 10 || g.guess === null) return;
-      const score = (g.guess === g.p) ? 10 : 0;
-      g.done = true; g.score = score;
-      finishGame("magyar", score);
-    }));
+              <div class="box">
+                <div class="row">
+                  <button class="btn primary" data-bin-trial ${g.done || g.trials.length >= 7 ? "disabled" : ""}>1回試行</button>
+                  <button class="btn" data-bin-submit ${g.done || g.trials.length < 7 ? "disabled" : ""}>提出</button>
+                </div>
 
-    app.querySelectorAll('[data-replay]').forEach(el => el.addEventListener('click', () => {
-      resetGames();
-      startChallenge();
-    }));
-    app.querySelectorAll('[data-menu]').forEach(el => el.addEventListener('click', () => {
-      state.mode = "menu";
-      render();
-    }));
-  }
+                <div class="divider"></div>
 
-  render();
-})();
-</script>
+                <div class="small muted">観測された結果</div>
+                <div class="faces" style="margin-top:10px;">
+                  ${g.trials.length ? g.trials.map(v => `<span class="face ${v ? "success" : "fail"}">${v}</span>`).join("") : `<span class="muted">まだ試行がありません。</span>`}
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="small muted">入力画面</div>
+                <div class="binary-input" style="margin-top:10px;">
+                  <span class="binary-prefix">0.</span>
+                  ${g.bits.map((bit, i) => `
+                    <div class="bit-control">
+                      <input type="range" min="0" max="1" step="1" value="${bit}" data-bit-index="${i}" ${g.done ? "disabled" : ""} />
+                      <div class="bit-label mono" data-bit-readout="${i}">${bit}</div>
+                    </div>
+                  `).join("")}
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="small mono">現在の入力: ${formatBinary(g.bits)}</div>
+              </div>
+
+              ${g.done ? `
+                <div class="score-box">
+                  <div class="kicker">得点</div>
+                  <div class="score-number">${g.score}</div>
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="box">
+              <div class="small muted">スコア定義</div>
+              <div class="small" style="margin-top:6px;">
+                入力された 0,1 の個数と、観測された 0,1 の個数が異なる場合は 0 点です。<br>
+                一致する場合のみ、<span class="mono">100 - 100|p - 推測p|</span> を得点とします。
+              </div>
+              <div class="divider"></div>
+              <div class="small muted">補足</div>
+              <div class="small">各桁はスライダで 0 / 1 を選びます。</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function magyarView(challengeMode){
+      const g = state.games.magyar;
+      const totalRounds = 10;
+      const currentTrials = g.trials;
+      const canGuess = currentTrials.length === 10 && !g.guessLocked;
+      const pDisplay = g.guessLocked ? `p = ${g.p}` : "p はラウンドごとに変化します";
+      return `
+        <div class="panel">
+          ${header("マジャールのコイン", `1回のゲームプレイで 10 ラウンド行います。各ラウンドでは 2 枚の硬貨を投げる試行を 10 回行い、その後に p = 0.2 / 0.5 / 0.8 から選択します。${challengeMode ? "（チャレンジ中）" : ""}`)}
+          <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,.95fr);">
+            <div class="stack">
+              <div class="score-box">
+                <div class="kicker">現在のラウンド</div>
+                <div class="score-number">${g.round} / ${totalRounds}</div>
+              </div>
+
+              <div class="box">
+                <div class="row">
+                  <span class="tag">このラウンドの試行数: ${currentTrials.length} / 10</span>
+                  <span class="tag">正解数: ${g.correctCount}</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="small muted">${pDisplay}</div>
+
+                <div class="divider"></div>
+
+                <div class="row">
+                  <button class="btn primary" data-magyar-run ${g.done || g.guessLocked || currentTrials.length >= 10 ? "disabled" : ""}>1回試行</button>
+                  <button class="btn good" data-magyar-guess-submit ${g.done || !canGuess ? "disabled" : ""}>p を確定</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="small muted">p の推測</div>
+                <div class="row" style="margin-top:10px;">
+                  ${[0.2, 0.5, 0.8].map(v => `
+                    <button class="choice ${g.guess === v ? "selected" : ""}" data-magyar-guess="${v}" ${g.done || g.guessLocked ? "disabled" : ""}>${v}</button>
+                  `).join("")}
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="small muted">このラウンドの試行結果</div>
+                <div class="history-list" style="margin-top:10px;">
+                  ${currentTrials.length ? currentTrials.map((x, i) => `
+                    <div class="history-item">
+                      ${i + 1} 回目: 1回目=${x.first} / 2回目=${x.second} / ${x.same ? "一致" : "不一致"}
+                    </div>
+                  `).join("") : `<div class="muted small">まだ試行結果がありません。</div>`}
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="small muted">
+                  ${g.lastResult || "このラウンドは、まず 10 回の 2 枚硬貨試行を行ってから p を選びます。"}
+                </div>
+              </div>
+
+              ${g.done ? `
+                <div class="score-box">
+                  <div class="kicker">得点</div>
+                  <div class="score-number">${g.score}</div>
+                </div>
+              ` : ""}
+
+              <div class="box">
+                <div class="small muted">ラウンド進行</div>
+                <div class="progress" style="margin-top:10px;"><div style="width:${((g.round - 1) / totalRounds) * 100}%"></div></div>
+                <div class="tiny" style="margin-top:8px;">残り ${Math.max(0, totalRounds - g.round + 1)} ラウンド</div>
+              </div>
+            </div>
+
+            <div class="box">
+              <div class="small muted">ルール</div>
+              <div class="small">
+                1回のゲームプレイは 10 ラウンドです。<br>
+                各ラウンドごとに、2 枚の硬貨を投げる試行を 10 回行ってから、p を 0.2 / 0.5 / 0.8 から選択します。<br>
+                ラウンドごとに p は変更されます。正解したラウンド数 × 10 が得点です。
+              </div>
+              <div class="divider"></div>
+              <div class="small muted">全ラウンドの記録</div>
+              <div class="history-list" style="margin-top:10px;">
+                ${g.history.length ? g.history.map((x, i) => `
+                  <div class="history-item">${i + 1} 回目: ${x}</div>
+                `).join("") : `<div class="muted small">まだ記録がありません。</div>`}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function render(){
+      musicStatus.textContent = state.settings.music ? "♪ Music ON" : "♪ Music OFF";
+      if (state.mode === "menu") app.innerHTML = menuView();
+      else if (state.mode === "settings") app.innerHTML = settingsView();
+      else if (state.mode === "freeplay") app.innerHTML = freeplayView();
+      else if (state.mode === "challenge") app.innerHTML = challengeView();
+      else app.innerHTML = menuView();
+      bindEvents();
+    }
+
+    function bindEvents(){
+      app.querySelectorAll("[data-back]").forEach(el => {
+        el.addEventListener("click", () => {
+          state.mode = "menu";
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-menu-action]").forEach(el => {
+        el.addEventListener("click", () => {
+          const action = el.getAttribute("data-menu-action");
+          if (action === "challenge") startChallenge();
+          if (action === "freeplay"){ state.mode = "freeplay"; render(); }
+          if (action === "settings"){ state.mode = "settings"; render(); }
+        });
+      });
+
+      app.querySelectorAll("[data-select-game]").forEach(el => {
+        el.addEventListener("click", () => {
+          state.selectedGame = el.getAttribute("data-select-game");
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-toggle-music]").forEach(el => {
+        el.addEventListener("click", () => setMusicEnabled(!state.settings.music));
+      });
+
+      app.querySelectorAll("[data-character-image-name]").forEach(el => {
+        el.addEventListener("input", e => {
+          state.settings.characterImageName = e.target.value || "mascot.png";
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-replay-challenge]").forEach(el => {
+        el.addEventListener("click", () => startChallenge());
+      });
+
+      // 確率ハンター
+      app.querySelectorAll("[data-hunter-trial]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.hunter;
+          if (g.done) return;
+          g.trials.push(sampleBernoulli(g.p));
+          render();
+        });
+      });
+      app.querySelectorAll("[data-hunter-guess]").forEach(el => {
+        el.addEventListener("input", e => {
+          state.games.hunter.guess = e.target.value;
+        });
+      });
+      app.querySelectorAll("[data-hunter-submit]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.hunter;
+          if (g.done) return;
+          const guess = clamp(Number(g.guess), 0, 1);
+          const score = Math.round(100 - 100 * Math.abs(g.p - guess) - g.trials.length);
+          g.done = true;
+          g.score = score;
+          finishGame("hunter", score);
+        });
+      });
+
+      // ストリーク・チャレンジ
+      app.querySelectorAll("[data-streak-run]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.streak;
+          if (g.ended) return;
+          const success = sampleBernoulli(g.p) === 1;
+          if (success){
+            g.streak += 1;
+            g.log.unshift(`成功 → streak = ${g.streak}, 倍率 ×${Math.pow(2, g.streak)}`);
+            render();
+          } else {
+            g.ended = true;
+            g.score = 0;
+            g.log.unshift("失敗 → 0 点");
+            finishGame("streak", 0);
+          }
+        });
+      });
+      app.querySelectorAll("[data-streak-end]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.streak;
+          if (g.ended) return;
+          g.ended = true;
+          g.score = g.streak * g.streak;
+          g.log.unshift(`終了 → score = ${g.score}`);
+          finishGame("streak", g.score);
+        });
+      });
+
+      // 確率推定ゲーム
+      app.querySelectorAll("[data-est-continue]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.estimate;
+          if (g.done || g.turn >= 10) return;
+          g.turn += 1;
+          const success = sampleBernoulli(g.p) === 1;
+          if (success){
+            g.score += 60;
+            g.lastMessage = `${g.turn}回目: 成功 → +60 点`;
+            g.log.unshift(g.lastMessage);
+            if (g.turn >= 10){
+              g.done = true;
+              finishGame("estimate", g.score);
+            } else {
+              render();
+            }
+          } else {
+            g.score -= 100;
+            g.lastMessage = `${g.turn}回目: 失敗 → -100 点で即終了`;
+            g.log.unshift(g.lastMessage);
+            g.done = true;
+            finishGame("estimate", g.score);
+          }
+        });
+      });
+      app.querySelectorAll("[data-est-stop]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.estimate;
+          if (g.done) return;
+          g.done = true;
+          g.lastMessage = `やめる → score = ${g.score}`;
+          g.log.unshift(g.lastMessage);
+          finishGame("estimate", g.score);
+        });
+      });
+
+      // 2進数ベルヌーイ
+      app.querySelectorAll("[data-bin-trial]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.binary;
+          if (g.done || g.trials.length >= 7) return;
+          g.trials.push(sampleBernoulli(g.p));
+          render();
+        });
+      });
+      app.querySelectorAll("[data-bit-index]").forEach(el => {
+        el.addEventListener("input", e => {
+          const g = state.games.binary;
+          if (g.done) return;
+          const idx = Number(el.getAttribute("data-bit-index"));
+          g.bits[idx] = Number(e.target.value);
+          const readout = app.querySelector(`[data-bit-readout="${idx}"]`);
+          if (readout) readout.textContent = g.bits[idx];
+          render();
+        });
+      });
+      app.querySelectorAll("[data-bin-submit]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.binary;
+          if (g.done || g.trials.length < 7) return;
+          const observedOnes = g.trials.filter(x => x === 1).length;
+          const guessOnes = g.bits.filter(x => x === 1).length;
+          let score = 0;
+          if (observedOnes === guessOnes){
+            let pGuess = 0;
+            for (let i = 0; i < 7; i++){
+              if (g.bits[i] === 1) pGuess += Math.pow(2, -(i + 1));
+            }
+            score = Math.round(100 - 100 * Math.abs(g.p - pGuess));
+          }
+          g.done = true;
+          g.score = score;
+          finishGame("binary", score);
+        });
+      });
+
+      // マジャールのコイン
+      app.querySelectorAll("[data-magyar-run]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.magyar;
+          if (g.done || g.guessLocked || g.trials.length >= 10) return;
+          const first = sampleBernoulli(g.p) === 1 ? "表" : "裏";
+          const second = sampleBernoulli(g.p) === 1 ? "表" : "裏";
+          const same = first === second;
+          g.trials.push({ first, second, same });
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-magyar-guess]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.magyar;
+          if (g.done || g.guessLocked) return;
+          g.guess = Number(el.getAttribute("data-magyar-guess"));
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-magyar-guess-submit]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.magyar;
+          if (g.done || g.guessLocked || g.trials.length < 10 || g.guess === null) return;
+
+          const correct = (g.guess === g.p);
+          if (correct) g.correctCount += 1;
+          g.history.push(`第 ${g.round} ラウンド: p=${g.p} / 推測=${g.guess} / ${correct ? "正解" : "不正解"}`);
+          g.lastResult = `第 ${g.round} ラウンド: p=${g.p} / 推測=${g.guess} / ${correct ? "正解" : "不正解"}`;
+
+          g.guessLocked = true;
+          g.score = g.correctCount * 10;
+
+          if (g.round >= 10){
+            g.done = true;
+            finishGame("magyar", g.score);
+          } else {
+            render();
+          }
+        });
+      });
+
+      app.querySelectorAll("[data-magyar-next]").forEach(el => {
+        el.addEventListener("click", () => {
+          const g = state.games.magyar;
+          if (g.done || g.round < 10) return;
+
+          g.round += 1;
+          g.guessLocked = false;
+          g.guess = null;
+          g.trials = [];
+          g.p = choice([0.2, 0.5, 0.8]);
+
+          if (g.round > 10){
+            g.done = true;
+            g.score = g.correctCount * 10;
+            finishGame("magyar", g.score);
+          } else {
+            render();
+          }
+        });
+      });
+    }
+
+    resetAllGames();
+    render();
+  </script>
 </body>
 </html>
