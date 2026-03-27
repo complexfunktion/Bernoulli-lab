@@ -199,11 +199,11 @@ button,input{font:inherit}
 
 <script>
 const GAME_META = [
-  {id:"hunter",  name:"確率ハンター",       icon:"🎯",desc:"コインの表が出る確率 p を見破れ！"},
-  {id:"streak",  name:"ストリーク・チャレンジ",icon:"⚡",desc:"成功を重ねて大得点！失敗で全消し。"},
+  {id:"hunter",  name:"確率ハンター",       icon:"🎯",desc:"コインの表が出る確率 p を見破れ!"},
+  {id:"streak",  name:"ストリーク・チャレンジ",icon:"⚡",desc:"成功を重ねて大得点!失敗で全消し。"},
   {id:"estimate",name:"確率推定ゲーム",      icon:"🏁",desc:"続けるか止まるか、あなたが決める。"},
   {id:"binary",  name:"2進数ベルヌーイ",     icon:"🔢",desc:"7回の試行で 2進数の p を当てよう。"},
-  {id:"magyar",  name:"マジャールのコイン",  icon:"🪙",desc:"10ラウンドで p を言い当てろ！"},
+  {id:"magyar",  name:"マジャールのコイン",  icon:"🪙",desc:"10ラウンドで p を言い当てろ!"},
 ];
 
 const app=document.getElementById("app");
@@ -316,7 +316,7 @@ function header(title,subtitle){
 
 /* ⑥ mascot.png を相対パスで表示。読み込み失敗時は絵文字フォールバック */
 function mascotCard(msg){
-  msg=msg||"がんばれ！確率の世界を探検しよう！";
+  msg=msg||"がんばれ!確率の世界を探検しよう!";
   return `<div class="mascot-card">
     <div class="mascot-img-wrap">
       <img src="mascot.png" alt="マスコット"
@@ -335,13 +335,13 @@ function menuView(){
     <button class="card" data-menu-action="challenge">
       <div class="card-icon">3️⃣</div>
       <h2>3連続チャレンジ</h2>
-      <p>5つのゲームからランダムに3つ選ばれます。合計得点で腕試し！</p>
+      <p>5つのゲームからランダムに3つ選ばれます。合計得点で腕試し!</p>
       <div class="card-foot">チャレンジ開始 →</div>
     </button>
     <button class="card" data-menu-action="freeplay">
       <div class="card-icon">🎮</div>
       <h2>フリープレイ</h2>
-      <p>好きなミニゲームを自由に選んで、何度でも遊べます。</p>
+      <p>好きなミニゲームを自由に選んで,何度でも遊べます。</p>
       <div class="card-foot">遊ぶ →</div>
     </button>
     <button class="card" data-menu-action="settings">
@@ -351,7 +351,7 @@ function menuView(){
       <div class="card-foot">設定を開く →</div>
     </button>
   </div>
-  <div style="margin-top:16px;max-width:480px;">${mascotCard("ようこそ！どのゲームで遊ぶか選んでね。")}</div>`;
+  <div style="margin-top:16px;max-width:480px;">${mascotCard("ようこそ!どのゲームで遊ぶか選んでね。")}</div>`;
 }
 
 /* ---- 設定 ---- */
@@ -371,7 +371,7 @@ function settingsView(){
           </button>
         </div>
       </div>
-      <div style="max-width:420px;">${mascotCard("設定を変えてみよう！")}</div>
+      <div style="max-width:420px;">${mascotCard("設定を変えてみよう!")}</div>
     </div>
   </div>`;
 }
@@ -381,10 +381,10 @@ function freeplayView(){
   return `<div class="layout-grid">
     <div class="sidebar">
       <div class="section-head" style="margin-bottom:0;">
-        <div><h2 class="section-title">🎮 フリープレイ</h2><div class="section-sub">ゲームを選んでね！</div></div>
+        <div><h2 class="section-title">🎮 フリープレイ</h2><div class="section-sub">ゲームを選んでね!</div></div>
         <button class="btn" data-back>戻る</button>
       </div>
-      <div style="margin-top:14px;">${mascotCard("好きなゲームを選んでね！")}</div>
+      <div style="margin-top:14px;">${mascotCard("好きなゲームを選んでね!")}</div>
       <div class="freeplay-side-games">
         ${GAME_META.map(g=>`
         <button class="side-item ${state.selectedGame===g.id?"active":""}" data-select-game="${g.id}">
@@ -402,7 +402,7 @@ function challengeView(){
   const currentId=state.challenge.games[state.challenge.index];
   const mascotMsg=state.challenge.done
     ?`お疲れ様!合計 ${state.challenge.total} 点!`
-    :`第${state.challenge.index+1}ゲーム中！頑張って!`;
+    :`第${state.challenge.index+1}ゲーム中!頑張って!`;
   const left=`<div class="sidebar">
     <div class="section-head" style="margin-bottom:0;">
       <div><h2 class="section-title">3️⃣ 3連続チャレンジ</h2>
@@ -519,7 +519,7 @@ function streakView(cm){
         <div class="score-box"><div class="kicker">🔥 連続成功数</div><div class="score-number">${g.streak}</div></div>
         <div class="box">
           <div class="row">
-            <button class="btn good" data-streak-run ${g.ended?"disabled":""}>🎰 投げる！</button>
+            <button class="btn good" data-streak-run ${g.ended?"disabled":""}>🎰 投げる!</button>
             <button class="btn" data-streak-end ${g.ended?"disabled":""}>🛑 今すぐ終了</button>
           </div>
           <div class="divider"></div>
@@ -537,7 +537,7 @@ function streakView(cm){
         </div>
         <div class="divider"></div>
         <div class="small muted">💡 ヒント</div>
-        <div class="small">成功確率 ${formatPct(g.p)} を念頭に置いて、どこで止めるかが勝負！</div>
+        <div class="small">成功確率 ${formatPct(g.p)} を念頭に置いて,どこで止めるかが勝負!</div>
       </div>
     </div>
   </div>`;
@@ -561,7 +561,7 @@ function estimateView(cm){
           </div>
           <div class="divider"></div>
           <div class="row">
-            <button class="btn primary" data-est-continue ${g.done?"disabled":""}>▶ 続ける（1回試行）</button>
+            <button class="btn primary" data-est-continue ${g.done?"disabled":""}>▶ 続ける(1回試行)</button>
             <button class="btn" data-est-stop ${g.done?"disabled":""}>🛑 ここで止める</button>
           </div>
           <div class="divider"></div>
@@ -570,7 +570,7 @@ function estimateView(cm){
         ${g.done?`<div class="score-box"><div class="kicker">確定得点</div><div class="score-number">${g.score} 点</div></div>`:""}
       </div>
       <div class="box">
-        <div class="small muted">📜 履歴　（1=成功 / 0=失敗）</div>
+        <div class="small muted">📜 履歴　(1=成功 / 0=失敗)</div>
         <div class="history-list" style="margin-top:10px;">
           ${g.log.length?g.log.map(x=>`<div class="history-item">${x}</div>`).join(""):`<div class="muted small">まだ記録がありません</div>`}
         </div>
@@ -596,7 +596,7 @@ function binaryView(cm){
   const g=state.games.binary;
   const currentVal=bitsToVal(g.bits);
   return `<div class="panel">
-    ${header("🔢 2進数ベルヌーイ","p は 1/128 の整数倍です。7回の試行結果を見て、スライダで答えを入力しよう。")}
+    ${header("🔢 2進数ベルヌーイ","p は 1/128 の整数倍です。7回の試行結果を見て,スライダで答えを入力しよう。")}
     <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,.95fr);">
       <div class="stack">
         <div class="score-box"><div class="kicker">試行数</div><div class="score-number">${g.trials.length} / 7</div></div>
@@ -762,7 +762,7 @@ function magyarView(cm){
           <div class="divider"></div>
           <div class="small muted" style="margin-bottom:8px;">
             <strong>ステップ②</strong>　p の候補を選ぼう
-            ${!allFlipped?`<span style="opacity:.5;">（10回投げてから）</span>`:""}
+            ${!allFlipped?`<span style="opacity:.5;">(10回投げてから)</span>`:""}
           </div>
           <div class="row">${choiceButtons}</div>
           <div style="margin-top:10px;">
@@ -871,9 +871,9 @@ document.addEventListener("click",e=>{
     const g=state.games.streak;
     if(!g.ended){
       const r=sampleBernoulli(g.p);
-      if(r===1){g.streak+=1;g.log.unshift(`結果: 1（成功）　ストリーク: ${g.streak}`);}
+      if(r===1){g.streak+=1;g.log.unshift(`結果: 1(成功)ストリーク: ${g.streak}`);}
       else{
-        g.log.unshift(`結果: 0（失敗）　ストリーク: ${g.streak} → 0`);
+        g.log.unshift(`結果: 0(失敗)　ストリーク: ${g.streak} → 0`);
         g.streak=0;g.score=0;g.ended=true;g.done=true;
         if(state.mode==="challenge") finishGame("streak",0); else render();
         return;
