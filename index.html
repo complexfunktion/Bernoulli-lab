@@ -189,7 +189,7 @@ button,input{font:inherit}
   <header class="topbar">
     <div class="brand">
       <div class="title">🧪 Bernoulli Lab</div>
-      <div class="subtitle">ベルヌーイ過程を遊びながら学ぼう！<br>3連続チャレンジ・フリープレイ・設定の3モードで楽しめます。</div>
+      <div class="subtitle">ベルヌーイ過程を遊びながら学ぼう!<br>3連続チャレンジ・フリープレイから選んで楽しめます。</div>
     </div>
     <!-- ① ヘッダーのBGMピルはクリック不可・表示のみ -->
     <div class="status-pill" id="musicStatus">♪ BGM OFF</div>
@@ -323,7 +323,7 @@ function mascotCard(msg){
         onerror="this.style.display='none';this.parentElement.innerHTML='🤖';" />
     </div>
     <div class="mascot-text">
-      <strong>ラボ博士</strong>
+      <strong>スァイザーラント</strong>
       <span>${msg}</span>
     </div>
   </div>`;
@@ -333,7 +333,7 @@ function mascotCard(msg){
 function menuView(){
   return `<div class="grid menu-grid">
     <button class="card" data-menu-action="challenge">
-      <div class="card-icon">🧪</div>
+      <div class="card-icon">3️⃣</div>
       <h2>3連続チャレンジ</h2>
       <p>5つのゲームからランダムに3つ選ばれます。合計得点で腕試し！</p>
       <div class="card-foot">チャレンジ開始 →</div>
@@ -401,11 +401,11 @@ function freeplayView(){
 function challengeView(){
   const currentId=state.challenge.games[state.challenge.index];
   const mascotMsg=state.challenge.done
-    ?`お疲れ様！合計 ${state.challenge.total} 点！`
-    :`第${state.challenge.index+1}ゲーム中！頑張って！`;
+    ?`お疲れ様!合計 ${state.challenge.total} 点!`
+    :`第${state.challenge.index+1}ゲーム中！頑張って!`;
   const left=`<div class="sidebar">
     <div class="section-head" style="margin-bottom:0;">
-      <div><h2 class="section-title">🧪 チャレンジ</h2>
+      <div><h2 class="section-title">3️⃣ 3連続チャレンジ</h2>
         <div class="section-sub">${state.challenge.index+1} / ${state.challenge.games.length} ゲーム目</div></div>
       <button class="btn" data-back>終了</button>
     </div>
@@ -418,7 +418,7 @@ function challengeView(){
             <span>${i+1}. ${label}</span>
             <span class="tag">${i<state.challenge.index?"✅完了":i===state.challenge.index?"▶実行中":"⏳待機"}</span>
           </div>
-          <div class="side-desc">${i<state.challenge.index?`獲得得点: ${state.challenge.history[i]?.score??0} 点`:"まもなく挑戦！"}</div>
+          <div class="side-desc">${i<state.challenge.index?`獲得得点: ${state.challenge.history[i]?.score??0} 点`:"まもなく挑戦!"}</div>
         </div>`;
       }).join("")}
     </div>
@@ -431,7 +431,7 @@ function challengeView(){
 function challengeResultView(){
   return `<div class="panel">
     <div class="section-head">
-      <div><h2 class="section-title">🎉 チャレンジ完了！</h2><div class="section-sub">3ゲームの合計結果です。</div></div>
+      <div><h2 class="section-title">🎉 チャレンジ完了!</h2><div class="section-sub">3ゲームの合計結果です。</div></div>
       <button class="btn" data-back>メニューへ</button>
     </div>
     <div class="result-grid">
@@ -445,7 +445,7 @@ function challengeResultView(){
     <div class="divider"></div>
     <div class="score-box"><div class="kicker">🏆 最終合計得点</div><div class="score-number">${state.challenge.total} 点</div></div>
     <div class="footer-actions">
-      <button class="btn primary" data-replay-challenge>もう一度チャレンジ！</button>
+      <button class="btn primary" data-replay-challenge>もう一度チャレンジ!</button>
       <button class="btn" data-back>メニューへ戻る</button>
     </div>
   </div>`;
@@ -466,7 +466,7 @@ function renderGame(id,cm){
 function hunterView(cm){
   const g=state.games.hunter;
   return `<div class="panel">
-    ${header("🎯 確率ハンター",`コインの表が出る確率 p を推定しよう！${cm?"（チャレンジ中）":""}`)}
+    ${header("🎯 確率ハンター",`コインの表が出る確率 p を推定しよう!${cm?"（チャレンジ中）":""}`)}
     <div class="grid" style="grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);">
       <div class="stack">
         <div class="box">
@@ -501,7 +501,7 @@ function hunterView(cm){
         <div class="mono small" style="margin-top:8px;line-height:2;">得点 = 100 − 100×|p−推定値| − 試行回数</div>
         <div class="divider"></div>
         <div class="small muted">🎮 遊び方</div>
-        <div class="small">「投げる」で 1（表）か 0（裏）が出ます。<br>試行回数が多いほど正確に推定できますが、<strong>試行するたびに1点減点</strong>。<br>自信がついたら「答えを提出」しましょう！</div>
+        <div class="small">「投げる」で 1(表)か 0(裏)が出ます。<br>試行回数が多いほど正確に推定出来ますが,<strong>試行するたびに1点減点</strong>。<br>自信がついたら「答えを提出」しましょう!</div>
       </div>
     </div>
   </div>`;
@@ -523,7 +523,7 @@ function streakView(cm){
             <button class="btn" data-streak-end ${g.ended?"disabled":""}>🛑 今すぐ終了</button>
           </div>
           <div class="divider"></div>
-          <div class="small muted">1（成功）が続くたびに倍率が上がります。0（失敗）で <strong style="color:var(--danger)">0点</strong>！<br>「終了」した時点の <span class="mono">連続数²</span> が得点。</div>
+          <div class="small muted">1（成功）が続くたびに倍率が上がります。0（失敗）で <strong style="color:var(--danger)">0点</strong>!<br>「終了」した時点の <span class="mono">連続数²</span> が得点。</div>
         </div>
         <div class="box">
           <div class="row"><span class="tag">倍率: ×${Math.pow(2,g.streak)}</span><span class="tag">p: ${formatPct(g.p)}</span></div>
@@ -578,9 +578,9 @@ function estimateView(cm){
         <div class="small muted">📐 得点ルール</div>
         <div class="small">
           ・結果 <strong>1</strong>（成功）→ <strong style="color:var(--accent2)">+60点</strong><br>
-          ・結果 <strong>0</strong>（失敗）→ <strong style="color:var(--danger)">−100点 かつ即終了！</strong><br>
+          ・結果 <strong>0</strong>（失敗）→ <strong style="color:var(--danger)">−100点 且つ即終了!</strong><br>
           ・「止める」でその時点の得点を確定。<br>
-          ・10回連続成功で最大 600点！
+          ・10回連続成功で最大 600点!
         </div>
       </div>
     </div>
@@ -617,7 +617,7 @@ function binaryView(cm){
           <div class="score-number">${g.score} 点</div>
           <div class="small muted" style="margin-top:6px;">正解: ${formatBinary(g.pInt.toString(2).padStart(7,'0').split('').map(Number))} (= ${g.p.toFixed(4)})</div></div>`:""}
         <div class="box">
-          <div class="small muted" style="margin-bottom:10px;">スライダで各ビットを設定（上=1 / 下=0）</div>
+          <div class="small muted" style="margin-bottom:10px;">スライダで各ビットを設定(上=1 / 下=0)</div>
           <div class="binary-input">
             <span class="binary-prefix">0.</span>
             ${g.bits.map((b,i)=>`
@@ -638,7 +638,7 @@ function binaryView(cm){
         <div class="small muted">🎮 遊び方</div>
         <div class="small">p は 0/128, 1/128, … , 127/128 のどれかです。<br><br>
           7回試行して結果を観察し、スライダで<br>
-          <span class="mono">p = 0.b₁b₂b₃b₄b₅b₆b₇</span>（2進数）を当てよう！</div>
+          <span class="mono">p = 0.b₁b₂b₃b₄b₅b₆b₇</span>(2進数)を当てよう！</div>
         <div class="divider"></div>
         <div class="small muted">📐 得点計算</div>
         <div class="small mono">得点 = max(0, 100 − |p真 − p推定|×200)</div>
@@ -700,7 +700,7 @@ function magyarView(cm){
     const ok=g.roundResult===1;
     resultBox=`<div class="box" style="border-color:${ok?"rgba(35,196,131,.4)":"rgba(255,107,107,.4)"};">
       <div style="font-size:22px;font-weight:900;color:${ok?"var(--accent2)":"var(--danger)"};">
-        結果: ${ok?"1（正解！）":"0（不正解…）"}
+        結果: ${ok?"1（正解!）":"0（不正解…）"}
       </div>
       <div class="small muted" style="margin-top:4px;">${g.lastResult}</div>
       <button class="btn primary" style="margin-top:12px;" data-magyar-next>
@@ -712,7 +712,7 @@ function magyarView(cm){
   /* 完了画面 */
   if(g.done){
     return `<div class="panel">
-      ${header("🪙 マジャールのコイン","全10ラウンド完了！")}
+      ${header("🪙 マジャールのコイン","全10ラウンド完了!")}
       <div class="stack">
         <div class="finish-banner">
           <div style="font-size:32px;font-weight:900;">🏆 ${g.score} 点！</div>
@@ -727,7 +727,7 @@ function magyarView(cm){
           <div class="history-item">
             <strong>ラウンド${i+1}</strong>：
             あなた p=${formatPct(h.guess)} → 正解 p=${formatPct(h.p)}
-            <span style="color:${h.correct?"var(--accent2)":"var(--danger)"};">→ ${h.correct?"1（正解）":"0（不正解）"}</span>
+            <span style="color:${h.correct?"var(--accent2)":"var(--danger)"};">→ ${h.correct?"1(正解)":"0(不正解)"}</span>
           </div>`).join("")}
         </div>
         ${cm?"":`<button class="btn primary" data-magyar-restart>もう一度プレイ</button>`}
@@ -740,7 +740,7 @@ function magyarView(cm){
     <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,.95fr);">
       <div class="stack">
         <div class="box">
-          <div class="small muted">📊 ラウンド進捗　（1=正解 / 0=不正解）</div>
+          <div class="small muted">📊 ラウンド進捗　(1=正解 / 0=不正解)</div>
           <div class="magyar-rounds" style="margin-top:10px;">${dots}</div>
         </div>
         <div class="score-box">
@@ -757,7 +757,7 @@ function magyarView(cm){
               ${allFlipped||g.roundResult!==null?"disabled":""}>
               🪙 コインを投げる
             </button>
-            <span class="tag">${allFlipped?"10回完了！":"残り "+flipsLeft+" 回"}</span>
+            <span class="tag">${allFlipped?"10回完了!":"残り "+flipsLeft+" 回"}</span>
           </div>
           <div class="divider"></div>
           <div class="small muted" style="margin-bottom:8px;">
@@ -773,7 +773,7 @@ function magyarView(cm){
           </div>
         </div>
         <div class="box">
-          <div class="small muted">今ラウンドの投げ結果　（1枚目の結果 ＋ 2枚の一致/不一致）</div>
+          <div class="small muted">今ラウンドの投げ結果　(1枚目の結果 ＋ 2枚の一致/不一致)</div>
           ${trialRows}
         </div>
         ${resultBox}
@@ -782,14 +782,14 @@ function magyarView(cm){
         <div class="small muted">🎮 遊び方</div>
         <div class="small">
           このコインの成功確率 p は<br>
-          <strong>20%・50%・80%</strong> のどれかです。<br><br>
+          <strong>0.2・0.5・0.8</strong> のどれかです。<br><br>
           <strong>① コインを10回投げる</strong><br>
           毎回 2枚のコインを投げます。<br>
-          見えるのは <strong>1枚目の結果（1=表 / 0=裏）</strong> と<br>
+          見えるのは <strong>1枚目の結果(1=表 / 0=裏)</strong> と<br>
           <strong>2枚が一致したか否か</strong> だけです。<br>
           （2枚目の結果は非表示！）<br><br>
-          <strong>② 候補から p を選んで「答え合わせ！」</strong><br><br>
-          正解なら <strong style="color:var(--accent2)">+10点</strong>。全10ラウンド！
+          <strong>② 候補から p を選んで「答え合わせ!」</strong><br><br>
+          正解なら <strong style="color:var(--accent2)">+10点</strong>。全10ラウンド!
         </div>
         <div class="divider"></div>
         <div class="small muted">📜 これまでの結果</div>
@@ -903,7 +903,7 @@ document.addEventListener("click",e=>{
         if(g.turn>=10){g.done=true;if(state.mode==="challenge") finishGame("estimate",Math.max(0,g.score));}
       } else {
         g.score-=100;
-        g.lastMessage=`ターン${g.turn}: 結果 0（失敗）→ −100点　即終了！`;
+        g.lastMessage=`ターン${g.turn}: 結果 0（失敗）→ −100点　即終了!`;
         g.log.unshift(g.lastMessage);
         g.done=true;
         if(state.mode==="challenge") finishGame("estimate",Math.max(0,g.score));
